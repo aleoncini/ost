@@ -1,0 +1,341 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="Andrea Leoncini">
+    <title>Openshift Sizing Tool</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <!-- Project CSS -->
+    <link href="css/ost.css" rel="stylesheet">
+
+</head>
+
+<body style="padding-top: 3.5rem">
+    <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+        <p style="color: white; font-weight: bold; font-size: 2em;"><img src="images/logo.svg" width="135" height="32"><img src="images/transparent_spacer.png" width="40" height="32"> Openshift Sizing Tool</p>
+    </nav>
+    
+<main role="main">
+
+    <div class="container">
+        <br><br>
+        <div id="step_0" class="container">
+            <h2>Red Hat OpenShift Sizing Tool</h2>
+            <p>
+                OpenShift subscriptions do not limit application instances. You can run as many application instances
+                in the OpenShift environment as the underlying hardware and infrastructure will support. Larger-
+                capacity hardware can run many application instances on a small number of hosts, while smaller-
+                capacity hardware will require many hosts to run many application instances. The primary factor in
+                determining the size of an OpenShift environment is how many pods, or application instances, will be
+                running at any given time.
+            </p>
+            <hr>
+            <br><br>
+            <div class="form-row">
+                <div class="form-group col-md-12">
+                <label for="input_clusterName">Give a name to this cluster</label>
+                <input type="text" class="form-control" id="input_clusterName" placeholder="DEVELOPMENT">
+                </div>
+            </div>
+
+            <div style="text-align: center;">
+                <button id="step_0_next_btn" type="submit" class="btn btn-primary">Start</button>
+            </div>
+        </div>
+
+        <div id="step_1" class="container" style="display:none">
+            <h2>Step 1 - standard size of the working nodes</h2>
+            <p>You may have a standard VM size for application instances or, if you typically deploy on bare metal, a
+                standard server configuration. The following questions will help you more accurately understand your
+                VM and hardware needs. Remember that in most cases, 2 vCPUs is equivalent to 1 core.
+            </p>
+            <table class="table">
+                <thead>
+                  <tr>
+                    <th scope="col">Relevant questions</th>
+                    <th scope="col">Example answer</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>What is the memory capacity of the VMs you will
+                            use for nodes?<br>
+                            What is the number of vCPUs for the VMs you
+                            will use for nodes?<br>
+                            Is hyperthreading in use?</td>
+                        <td>Our VMs have 64GB of memory and 4 vCPUs
+                            and hyperthreading is used</td>
+                    </tr>
+                </tbody>
+            </table>
+            <hr>
+            <br><br>
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                <label for="input_corenmb">Number of core</label>
+                <input type="text" class="form-control" id="input_corenmb" placeholder="8">
+                </div>
+                <div class="form-group col-md-6">
+                <label for="input_ram">Total RAM for each host (GB)</label>
+                <input type="text" class="form-control" id="input_ram" placeholder="64">
+                </div>
+            </div>
+            <div class="form-group col-md-4">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="check_ht">
+                    <label class="form-check-label" for="check_ht">
+                    Hyperthreading enabled
+                    </label>
+                </div>
+            </div>  
+            <div style="text-align: center;">
+                <button id="step_1_prev_btn" type="submit" class="btn btn-primary">&laquo; Previous</button>
+                <button id="step_1_next_btn" type="submit" class="btn btn-primary">Next &raquo;</button>
+            </div>
+        </div>
+
+        <div id="step_2" class="container" style="display:none">
+            <h2>Step 2 - Calculate number of application instances needed</h2>
+            <p>Determine how many application instances, or pods, you plan to deploy. When sizing the environment, any application component deployed on OpenShift — such as a database, front-end static server, or message broker instance — is considered an application instance.
+            </p>
+            <p>
+                This figure can simply be an approximation to help you calculate a gross estimate of your OpenShift
+                environment size. CPU, memory oversubscription, quotas and limits, and other features can be used
+                to further refine this estimate.
+            </p>
+            <table class="table">
+                <thead>
+                  <tr>
+                    <th scope="col">Relevant questions</th>
+                    <th scope="col">Example answer</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>How many application instances do you
+                            anticipate deploying in each OpenShift
+                            environment?<br>
+                            What type of applications are they (e.g.,
+                            language, framework, database)?
+                        </td>
+                        <td>We have around 1,250 application instances in
+                            our development environment and around 250
+                            application instances in production.<br>
+                            We mainly deploy Java but have some Microsoft
+                            .NET Core and Ruby applications as well. We also
+                            use a lot of MySQL.
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <hr>
+            <br><br>
+            <div class="form-row">
+                <div class="form-group col-md-12">
+                <label for="input_instnmb">Number of application instances</label>
+                <input type="text" class="form-control" id="input_instnmb" placeholder="200">
+                </div>
+            </div>
+            <div style="text-align: center;">
+                <button id="step_2_prev_btn" type="submit" class="btn btn-primary">&laquo; Previous</button>
+                <button id="step_2_next_btn" type="submit" class="btn btn-primary">Next &raquo;</button>
+            </div>
+        </div>
+
+        <div id="step_3" class="container" style="display:none">
+            <h2>Step 3 - Determine maximum working node utilization</h2>
+            <p>We recommend reserving some space in case of increased demand, especially if autoscaling is
+                enabled for workloads. Your preferred utilization will vary, based on historical load for the applications
+                that will run on OpenShift.
+            </p>
+            <table class="table">
+                <thead>
+                  <tr>
+                    <th scope="col">Relevant questions</th>
+                    <th scope="col">Example answer</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>How much space do I want to reserve for increased demand?
+                        </td>
+                        <td>We want to run nodes at a maximum average of 80% of total capacity (leaving 20% in reserve).
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <hr>
+            <br><br>
+            <div class="form-row">
+                <div class="form-group col-md-12">
+                <label for="input_nodeutil">maximum node utilization (%)</label>
+                <input type="text" class="form-control" id="input_nodeutil" placeholder="80">
+                </div>
+            </div>
+            <div style="text-align: center;">
+                <button id="step_3_prev_btn" type="submit" class="btn btn-primary">&laquo; Previous</button>
+                <button id="step_3_next_btn" type="submit" class="btn btn-primary">Next &raquo;</button>
+            </div>
+        </div>
+
+        <div id="step_4" class="container" style="display:none">
+            <h2>Step 4 - Determine total memory footprint</h2>
+            <p>calculate the total memory footprint of the deployed applications. If you are considering a completely greenfield environment, memory use data may not be available, but you can use educated approximations — for example, 1GB of memory per Java application instance — to make an estimate.
+            </p>
+            <table class="table">
+                <thead>
+                  <tr>
+                    <th scope="col">Relevant questions</th>
+                    <th scope="col">Example answer</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>What is the average memory footprint of applications?
+                        </td>
+                        <td>Our application instances use 2GB of memory or less.<br>
+                            We typically allocate 2GB for JVM heap.
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <hr>
+            <br><br>
+            <div class="form-row">
+                <div class="form-group col-md-12">
+                <label for="input_memftp">Aplication avarage footprint (GB)</label>
+                <input type="text" class="form-control" id="input_memftp" placeholder="2">
+                </div>
+            </div>
+            <div style="text-align: center;">
+                <button id="step_4_prev_btn" type="submit" class="btn btn-primary">&laquo; Previous</button>
+                <button id="step_4_next_btn" type="submit" class="btn btn-primary">Next &raquo;</button>
+            </div>
+        </div>
+
+        <div id="step_5" class="container" style="display:none">
+            <h2>Step 5 - Calculation</h2>
+            <p>Finally, determine the number of OpenShift subscriptions needed based on the data gathered.
+            </p>
+            <table class="table">
+                <thead>
+                    <tr>
+                      <th id="tbl_title" style="width:80%; text-align: left;" scope="col"></th>
+                      <th scope="col">&nbsp;</th>
+                    </tr>
+                  </thead>  
+                <tbody>
+                    <tr>
+                        <td style="width:80%;">Estimated number of application instances
+                        </td>
+                        <td id="appInstances" style="text-align: right;">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="width:80%;">Total memory utilization for each working node
+                        </td>
+                        <td id="totmem" style="text-align: right;">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="width:80%;">Number of nodes required to cover utilization
+                        </td>
+                        <td id="nodenumb" style="text-align: right;">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="width:80%;">Total required cores
+                        </td>
+                        <td id="totcores" style="text-align: right;">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="width:80%;">Total required virtual CPU
+                        </td>
+                        <td id="vcpus" style="text-align: right;">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: right; width:80%; font-weight: bold; color: brown;">Number of OpenShift Container Platform subscriptions
+                        </td>
+                        <td id="subs" style="text-align: right; font-weight: bold; color: brown;">575
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <div style="text-align: center;">
+                <button id="step_5_prev_btn" type="submit" class="btn btn-primary">&laquo; Previous</button>
+                <button id="step_5_over_btn" type="submit" class="btn btn-dark">Start Over</button>
+            </div>
+        </div>
+
+    </div>
+
+</main>
+  
+<!-- jQuery first, then Bootstrap JS -->
+<script src="js/jquery-3.3.1.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/ost.js"></script>
+<script type="text/javascript">
+
+    $(document).ready(function(){
+        $('#step_0_next_btn').click(function(){
+            $('#step_0').hide();
+            $('#step_1').show();
+        });
+
+        $('#step_1_prev_btn').click(function(){
+            $('#step_1').hide();
+            $('#step_0').show();
+        });
+        $('#step_1_next_btn').click(function(){
+            $('#step_1').hide();
+            $('#step_2').show();
+        });
+
+        $('#step_2_prev_btn').click(function(){
+            $('#step_2').hide();
+            $('#step_1').show();
+        });
+        $('#step_2_next_btn').click(function(){
+            $('#step_2').hide();
+            $('#step_3').show();
+        });
+
+        $('#step_3_prev_btn').click(function(){
+            $('#step_3').hide();
+            $('#step_2').show();
+        });
+        $('#step_3_next_btn').click(function(){
+            $('#step_3').hide();
+            $('#step_4').show();
+        });
+
+        $('#step_4_prev_btn').click(function(){
+            $('#step_4').hide();
+            $('#step_3').show();
+        });
+        $('#step_4_next_btn').click(function(){
+            $('#step_4').hide();
+            calculateAndShow();
+        });
+
+        $('#step_5_prev_btn').click(function(){
+            $('#step_5').hide();
+            $('#step_4').show();
+        });
+        $('#step_5_over_btn').click(function(){
+            $('#step_5').hide();
+            $('#step_0').show();
+        });
+
+    });
+
+</script>
+</body>
+</html>
