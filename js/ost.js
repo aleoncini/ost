@@ -58,10 +58,11 @@ function calculateAndShow() {
     var totalRequiredCores = numberOfNodes * hostCores;
     var totalVcpus = totalRequiredCores;
     if($('#check_ht').is(':checked')){
-        totalVcpus = totalRequiredCores / 2;
+        totalRequiredCores = totalRequiredCores / 2;
         console.log("======> HT enabled.");
     }
-    var subs = totalVcpus / 2;
+
+    var subs = totalRequiredCores / 2;
 
     $('#tbl_title').html('Cluster: ' + clusterName);
     $('#appInstances').html(apps);
