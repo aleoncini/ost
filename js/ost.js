@@ -1,17 +1,95 @@
+const small_size = 200;
+const medium_size = 150;
+const large_size = 100;
+const xl_size = 50;
+
 var utilization = 80;
-var apps = 200;
+var apps = 0;
+var totalMemoryUtilization = 0;
 var hostCores = 8;
 var hostRam = 64;
-var memFootprint = 2;
 var clusterName = 'DEVELOPMENT';
 
+function truncateWithPrecision(value, precision) {
+    var multiplier = Math.pow(10, precision || 0);
+    return Math.round(value * multiplier) / multiplier;
+}
+
 function resetVariables() {
+    $("#check_ht").prop("checked", false);
+    $('#input_pods_small').val('');
+    $('#input_pods_medium').val('');
+    $('#input_pods_large').val('');
+    $('#input_pods_xl').val('');
     utilization = 80;
-    apps = 200;
+    $('#input_nodeutil').val('');
+    apps = 0;
+    totalMemoryUtilization = 0;
     hostCores = 8;
+    $('#input_corenmb').val('');
     hostRam = 64;
-    memFootprint = 2;
+    $('#input_ram').val('');
     clusterName = 'DEVELOPMENT';
+    $('#input_clusterName').val('');
+};
+
+function calculateStepFourAndShow() {
+    var inpt = 0;
+    var mem = 0;
+    apps = 0;
+    totalMemoryUtilization = 0;
+    inpt = parseInt($('#input_pods_small').val());
+    if(inpt > 0){
+        mem = inpt * 0.5;
+    } else {
+        inpt = small_size;
+        mem = small_size * 0.5;
+    }
+    apps = apps + inpt;
+    totalMemoryUtilization = totalMemoryUtilization + mem;
+    $('#mem_ft_prnt_sm_num').html(inpt);
+    $('#mem_ft_prnt_sm_mem').html(mem);
+
+    inpt = parseInt($('#input_pods_medium').val());
+    if(inpt > 0){
+        mem = inpt;
+    } else {
+        inpt = medium_size;
+        mem = medium_size;
+    }
+    apps = apps + inpt;
+    totalMemoryUtilization = totalMemoryUtilization + mem;
+    $('#mem_ft_prnt_m_num').html(inpt);
+    $('#mem_ft_prnt_m_mem').html(mem);
+
+    inpt = parseInt($('#input_pods_large').val());
+    if(inpt > 0){
+        mem = inpt * 2;
+    } else {
+        inpt = large_size;
+        mem = large_size * 2;
+    }
+    apps = apps + inpt;
+    totalMemoryUtilization = totalMemoryUtilization + mem;
+    $('#mem_ft_prnt_l_num').html(inpt);
+    $('#mem_ft_prnt_l_mem').html(mem);
+
+    inpt = parseInt($('#input_pods_xl').val());
+    if(inpt > 0){
+        mem = inpt * 4;
+    } else {
+        inpt = xl_size;
+        mem = xl_size * 4;
+    }
+    apps = apps + inpt;
+    totalMemoryUtilization = totalMemoryUtilization + mem;
+    $('#mem_ft_prnt_xl_num').html(inpt);
+    $('#mem_ft_prnt_xl_mem').html(mem);
+
+    $('#mem_ft_prnt_tot_num').html(apps);
+    $('#mem_ft_prnt_tot_mem').html(totalMemoryUtilization);
+
+    $('#step_4').show();
 };
 
 function calculateAndShow() {
@@ -20,39 +98,23 @@ function calculateAndShow() {
     }
 
     var inpt = 0;
-    inpt = $('#input_corenmb').val();
+
+    inpt = parseInt($('#input_corenmb').val());
     if(inpt > 0){
-        hostCores = $('#input_corenmb').val();
-        console.log("======> cores: " + hostCores);
+        hostCores = inpt;
     }
 
-    inpt = $('#input_ram').val();
+    inpt = parseInt($('#input_ram').val());
     if(inpt > 0){
-        hostRam = $('#input_ram').val();
-        console.log("======> ram: " + hostRam);
+        hostRam = inpt;
     }
 
-    inpt = $('#input_nodeutil').val();
+    inpt = parseInt($('#input_nodeutil').val());
     if(inpt > 0){
         utilization = $('#input_nodeutil').val();
-        console.log("======> util: " + utilization);
     }
 
     var effectiveMemoryCapacity = hostRam * (utilization / 100);
-
-    inpt = $('#input_instnmb').val();
-    if(inpt > 0){
-        apps = $('#input_instnmb').val();
-        console.log("======> apps: " + apps);
-    }
-
-    inpt = $('#input_memftp').val();
-    if(inpt > 0){
-        memFootprint = $('#input_memftp').val();
-        console.log("======> mem: " + memFootprint);
-    }
-
-    var totalMemoryUtilization = apps * memFootprint;
 
     var numberOfNodes = Math.ceil(totalMemoryUtilization / effectiveMemoryCapacity);
     var totalRequiredCores = numberOfNodes * hostCores;
@@ -66,7 +128,7 @@ function calculateAndShow() {
 
     $('#tbl_title').html('Cluster: ' + clusterName);
     $('#appInstances').html(apps);
-    $('#totmem').html(effectiveMemoryCapacity);
+    $('#totmem').html( truncateWithPrecision(effectiveMemoryCapacity, 2));
     $('#nodenumb').html(numberOfNodes);
     $('#totcores').html(totalRequiredCores);
     $('#vcpus').html(totalVcpus);

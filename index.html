@@ -101,6 +101,7 @@
         <div id="step_2" class="container" style="display:none">
             <h2>Step 2 - Calculate number of application instances needed</h2>
             <p>Determine how many application instances, or pods, you plan to deploy. When sizing the environment, any application component deployed on OpenShift — such as a database, front-end static server, or message broker instance — is considered an application instance.
+                In this section a set of application categories is listed, set the numbers for each category.
             </p>
             <p>
                 This figure can simply be an approximation to help you calculate a gross estimate of your OpenShift
@@ -132,13 +133,47 @@
                     </tr>
                 </tbody>
             </table>
-            <hr>
-            <br><br>
             <div class="form-row">
-                <div class="form-group col-md-12">
-                <label for="input_instnmb">Number of application instances</label>
-                <input type="text" class="form-control" id="input_instnmb" placeholder="200">
-                </div>
+
+                <table class="table">
+                    <thead>
+                        <tr>
+                          <th style="width:80%; text-align: left;" scope="col">Application class or category</th>
+                          <th scope="col">instances</th>
+                        </tr>
+                      </thead>  
+                    <tbody>
+                        <tr>
+                            <td style="width:80%;">SMALL size (512 MB mem) - green field, micro services
+                            </td>
+                            <td style="text-align: right;">
+                                <input type="text" class="form-control" style="text-align:right;" id="input_pods_small" placeholder="200">                
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="width:80%;">MEDIUM size (1 GB mem)- EAP, SpringBoot, web servers
+                            </td>
+                            <td style="text-align: right;">
+                                <input type="text" class="form-control" style="text-align:right;" id="input_pods_medium" placeholder="150">                
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="width:80%;">LARGE size (2 GB mem) - lift & shift, brown field, fat java, small database
+                            </td>
+                            <td style="text-align: right;">
+                                <input type="text" class="form-control" style="text-align:right;" id="input_pods_large" placeholder="100">                
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="width:80%;">EXTRA LARGE size (4 GB mem)- Legacy applications, specific VMs, traditional database
+                            </td>
+                            <td style="text-align: right;">
+                                <input type="text" class="form-control" style="text-align:right;" id="input_pods_xl" placeholder="50">                
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+    
             </div>
             <div style="text-align: center;">
                 <button id="step_2_prev_btn" type="submit" class="btn btn-primary">&laquo; Previous</button>
@@ -184,33 +219,62 @@
 
         <div id="step_4" class="container" style="display:none">
             <h2>Step 4 - Determine total memory footprint</h2>
-            <p>calculate the total memory footprint of the deployed applications. If you are considering a completely greenfield environment, memory use data may not be available, but you can use educated approximations — for example, 1GB of memory per Java application instance — to make an estimate.
+            <p>calculate the total memory footprint of the deployed applications. If you entered the number of application instances at the step 2 this is the resulting overall memory occupancy. Check the numbers and in case you don't agree with the results move back to the Step 2. 
+            </p>
+            <p>Check here the total number of application instances and the resulting total memory footprint of the custer. 
             </p>
             <table class="table">
                 <thead>
-                  <tr>
-                    <th scope="col">Relevant questions</th>
-                    <th scope="col">Example answer</th>
-                  </tr>
-                </thead>
+                    <tr>
+                      <th style="width:70%; text-align: left;" scope="col">Application class or category</th>
+                      <th style="width:15%; text-align: right;" scope="col">#</th>
+                      <th style="width:15%; text-align: right;" scope="col">mem</th>
+                    </tr>
+                  </thead>  
                 <tbody>
                     <tr>
-                        <td>What is the average memory footprint of applications?
+                        <td style="width:80%;">SMALL size (512 MB mem) - green field, micro services
                         </td>
-                        <td>Our application instances use 2GB of memory or less.<br>
-                            We typically allocate 2GB for JVM heap.
+                        <td id="mem_ft_prnt_sm_num" style="text-align: right;">
+                        </td>
+                        <td id="mem_ft_prnt_sm_mem" style="text-align: right;">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="width:80%;">MEDIUM size (1 GB mem)- EAP, SpringBoot, web servers
+                        </td>
+                        <td id="mem_ft_prnt_m_num" style="text-align: right;">
+                        </td>
+                        <td id="mem_ft_prnt_m_mem" style="text-align: right;">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="width:80%;">LARGE size (2 GB mem) - lift & shift, brown field, fat java, small database
+                        </td>
+                        <td id="mem_ft_prnt_l_num" style="text-align: right;">
+                        </td>
+                        <td id="mem_ft_prnt_l_mem" style="text-align: right;">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="width:80%;">EXTRA LARGE size (4 GB mem)- Legacy applications, specific VMs, traditional database
+                        </td>
+                        <td id="mem_ft_prnt_xl_num" style="text-align: right;">
+                        </td>
+                        <td id="mem_ft_prnt_xl_mem" style="text-align: right;">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: right; width:70%; font-weight: bold; color: brown;">Total of application instances and memory footprint
+                        </td>
+                        <td id="mem_ft_prnt_tot_num" style="text-align: right; font-weight: bold; color: brown;">
+                        </td>
+                        <td id="mem_ft_prnt_tot_mem" style="text-align: right; font-weight: bold; color: brown;">
                         </td>
                     </tr>
                 </tbody>
             </table>
-            <hr>
             <br><br>
-            <div class="form-row">
-                <div class="form-group col-md-12">
-                <label for="input_memftp">Aplication avarage footprint (GB)</label>
-                <input type="text" class="form-control" id="input_memftp" placeholder="2">
-                </div>
-            </div>
             <div style="text-align: center;">
                 <button id="step_4_prev_btn" type="submit" class="btn btn-primary">&laquo; Previous</button>
                 <button id="step_4_next_btn" type="submit" class="btn btn-primary">Next &raquo;</button>
@@ -248,13 +312,13 @@
                         </td>
                     </tr>
                     <tr>
-                        <td style="width:80%;">Total required cores
+                        <td style="width:80%;">Total calculated cores
                         </td>
                         <td id="totcores" style="text-align: right;">
                         </td>
                     </tr>
                     <tr>
-                        <td style="width:80%;">Total required virtual CPU
+                        <td style="width:80%;">Total equivalent Virtual CPU
                         </td>
                         <td id="vcpus" style="text-align: right;">
                         </td>
@@ -313,7 +377,7 @@
         });
         $('#step_3_next_btn').click(function(){
             $('#step_3').hide();
-            $('#step_4').show();
+            calculateStepFourAndShow();
         });
 
         $('#step_4_prev_btn').click(function(){
@@ -331,6 +395,7 @@
         });
         $('#step_5_over_btn').click(function(){
             $('#step_5').hide();
+            resetVariables();
             $('#step_0').show();
         });
 
