@@ -39,7 +39,7 @@ function calculateStepFourAndShow() {
     apps = 0;
     totalMemoryUtilization = 0;
     inpt = parseInt($('#input_pods_small').val());
-    if(inpt > 0){
+    if(inpt >= 0){
         mem = inpt * 0.5;
     } else {
         inpt = small_size;
@@ -51,7 +51,7 @@ function calculateStepFourAndShow() {
     $('#mem_ft_prnt_sm_mem').html(mem);
 
     inpt = parseInt($('#input_pods_medium').val());
-    if(inpt > 0){
+    if(inpt >= 0){
         mem = inpt;
     } else {
         inpt = medium_size;
@@ -63,7 +63,7 @@ function calculateStepFourAndShow() {
     $('#mem_ft_prnt_m_mem').html(mem);
 
     inpt = parseInt($('#input_pods_large').val());
-    if(inpt > 0){
+    if(inpt >= 0){
         mem = inpt * 2;
     } else {
         inpt = large_size;
@@ -75,7 +75,7 @@ function calculateStepFourAndShow() {
     $('#mem_ft_prnt_l_mem').html(mem);
 
     inpt = parseInt($('#input_pods_xl').val());
-    if(inpt > 0){
+    if(inpt >= 0){
         mem = inpt * 4;
     } else {
         inpt = xl_size;
