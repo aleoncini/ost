@@ -1,0 +1,15 @@
+kind: Route
+apiVersion: route.openshift.io/v1
+metadata:
+  name: ost
+spec:
+  to:
+    kind: Service
+    name: ost
+    weight: 100
+  port:
+    targetPort: ost-app
+  wildcardPolicy: None
+  # tls:
+  #   termination: edge
+  #   insecureEdgeTerminationPolicy: Redirect
