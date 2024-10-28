@@ -19,4 +19,11 @@ $ podman run -p 8080:8080 ost
 ```
 This example forwards traffic from port 8080/TCP on the local machine. The service is available at `http://localhost:8080`.
 
+# Run on OpenShift
+The OST tool can be deployed on OpenShift using CLI or Console or GitOps solutions like ArgoCD. The simpler
+way is to deploy using the `oc` command line utlity:
+```
+$ oc apply -f manifests/
+```
 
+The command above creates the Deployment, Service and Route necessary to expose the application.
